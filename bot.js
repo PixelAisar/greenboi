@@ -126,7 +126,7 @@ client.on("message", async message => {
   }
 
   var filter = m => m.author.id === message.author.id;
-  if (message.content.startsWith(".gcreate")) {
+  if (message.content.startsWith("-gcreate")) {
     let embed1 = new Discord.RichEmbed()
       .setColor()
       .setDescription("Missing the following permission `MANAGE_GUILD`");
