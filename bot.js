@@ -36,7 +36,6 @@ client.on("message", message => {
 **  -server •  Shows information about the server.**
 **  -savatar • Shows the server avatar. **
 **  -avatar • Shows your avatar or the one who you mentioned.** 
-**  -suggest •  Adds a suggestion to a channel named #suggestions. **
 **__Administrator Commands__**
 **  -clear • Clears the chat.** 
 **  -ban • Bans someone you mentioned.** 
@@ -350,33 +349,6 @@ You are the nummber ${member.guild.memberCount} to join this server. `)
 }).catch(console.error)
 })
 
-client.on("message", message => {
-    var args = message.content.split(" ");
-    var sugg = message.content.split(" ").slice(1).join(" ");
-    var prefix = "-"
-    if (args[0] === prefix+"suggest"){
-    if (!sugg){
-        return message.channel.send("Usage : `"+args[0]+" <Your suggestion>`");
-    }
-    var chname = "suggestions"; // اسم الروم
-    var sugchanel = message.guild.channels.cache.find(ch => ch.name == chname); // اسم الروم 
-    if (!sugchanel){
-        return message.channel.send("**I cannot find a suggestion channel please create one with name `"+chname+"`**");
-    }
-    message.channel.send("Thanks you for suggestion , Your suggestion has been sent in <#"+sugchanel.id+">")
-    message.delete();
-    let embed = new Discord.MessageEmbed()
-    .setColor('RANDOM')
-    .setTitle('Suggestion By '+message.author.tag)
-    .setDescription(`${sugg}`)
-    sugchanel.send(embed).then(mes => {
-    mes.react(":arrow_up:").then(rec =>{
-        mes.react(":arrow_down:")
-    })
-    
-    });
-    }
-});
 
 client.on("message",message => {
     var args = message.content.split(" ");
