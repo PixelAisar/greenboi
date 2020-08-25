@@ -48,11 +48,79 @@ client.on("message", message => {
 **  -open •  Opens the chat for members. **
 **  -bc •  Broadcasts anything you say to the whole server.  **
 **  -addemoji •  Adds a emoji. **
+**  -setLog •  Set a log channel. **
+**  -toggleLog •  Toggles the log channel. **
 
 
 `);
   }
 });
+
+const log = JSON.parse(fs.readFileSync("./log.json", "utf8"));
+
+client.on("message", message => {
+  if (!message.channel.guild) return;
+
+  let room = message.content.split(" ").slice(1);
+  let findroom = message.guild.channels.find("name", `${room}`);
+  if (message.content.startsWith("-setLog")) {
+    if (!message.channel.guild)
+      return message.reply("**This Command Only For Servers**");
+    if (!message.member.hasPermission("MANAGE_GUILD"))
+      return message.channel.send(
+        "**Sorry But You Dont Have Permission** `MANAGE_GUILD`"
+      );
+    if (!room) return message.channel.send("Please Type The Channel Name");
+    if (!findroom)
+      return message.channel.send("Please Type The Log Channel Name");
+    let embed = new Discord.RichEmbed()
+      .setTitle("**Done The Log Code Has Been Setup**")
+      .addField("Channel:", `${room}`)
+      .addField("Requested By:", `${message.author}`)
+      .setThumbnail(message.author.avatarURL)
+      .setFooter(`${client.user.username}`);
+    message.channel.sendEmbed(embed);
+    log[message.guild.id] = {
+      channel: room,
+      onoff: "On"
+    };
+    fs.writeFile("./log.json", JSON.stringify(log), err => {
+      if (err) console.error(err);
+    });
+  }
+});
+
+client.on("message", message => {
+  if (message.content.startsWith("-toggleLog")) {
+    if (!message.channel.guild)
+      return message.reply("**This Command Only For Servers**");
+    if (!message.member.hasPermission("MANAGE_GUILD"))
+      return message.channel.send(
+        "**Sorry But You Dont Have Permission** `MANAGE_GUILD`"
+      );
+    if (!log[message.guild.id])
+      log[message.guild.id] = {
+        onoff: "Off"
+      };
+    if (log[message.guild.id].onoff === "Off")
+      return [
+        message.channel.send(`**The log Is __𝐎𝐍__ !**`),
+        (log[message.guild.id].onoff = "On")
+      ];
+    if (log[message.guild.id].onoff === "On")
+      return [
+        message.channel.send(`**The log Is __𝐎𝐅𝐅__ !**`),
+        (log[message.guild.id].onoff = "Off")
+      ];
+    fs.writeFile("./log.json", JSON.stringify(log), err => {
+      if (err)
+        console.error(err).catch(err => {
+          console.error(err);
+        });
+    });
+  }
+});
+
 
 client.on('message', msg => {
   if (msg.content === '-ping') {
@@ -99,6 +167,41 @@ ${args}`);
   }
 
 });
+
+client.on('message', function(message) {
+    if(!message.channel.guild) return;
+    if (message.author.bot) return;
+    if (message.author.id === client.user.id) return;
+    if (message.author.equals(client.user)) return;
+    if (!message.content.startsWith(prefix)) return;
+    
+    var args = message.content.substring(prefix.length).split(' ');
+    switch (args[0].toLocaleLowerCase()) {
+    case "clear" :
+    message.delete()
+    if(!message.channel.guild) return
+    if(message.member.hasPermission(0x2000)){ if (!args[1]) {
+    message.channel.fetchMessages()
+    .then(messages => {
+    message.channel.bulkDelete(messages);
+    var messagesDeleted = messages.array().length;
+    message.channel.sendMessage(' '+ "**```fix\n" + messagesDeleted + " " +  ': Amount of messages that got deleted' + "```**").then(m => m.delete(5000));
+    })
+    } else {
+    let messagecount = parseInt(args[1]);
+    message.channel.fetchMessages({limit: messagecount}).then(messages => message.channel.bulkDelete(messages));
+    message.channel.sendMessage(' '+ "**```fix\n" + args[1] + " " +  ': Amount of messages that got deleted' + "```**").then(m => m.delete(5000));
+    message.delete(60000);
+    }
+    } else {
+    var manage = new Discord.RichEmbed()
+    .setDescription('You do not have the permission MANAGE_MESSAGES :(')
+    .setColor("RANDOM")
+    message.channel.sendEmbed(manage)
+    return;
+    }
+    }
+    });
 
 client.on("message", async message => {
   const moment = require("moment"); //npm i moment
