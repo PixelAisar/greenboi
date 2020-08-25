@@ -25,31 +25,32 @@ client.on('message', message => {
 
 client.on("message", message => {
   if (message.author.bot) return;
-  if (message.content === "-help") {
+  if (message.content === "d!help") {
     message.channel.send(
       `**:smiling_imp:  | The commands has been sent in your dms. **`
     );
 
     message.author.sendMessage(` ✽ **__ Depex Bot v1__**
 **__General Commands__** 
-**  -bot • Shows information about the bot.** 
-**  -user • Shows information about you.** 
-**  -server •  Shows information about the server.**
-**  -savatar • Shows the server avatar. **
-**  -avatar • Shows your avatar or the one who you mentioned.** 
+**  d!bot • Shows information about the bot.** 
+**  d!user • Shows information about you.** 
+**  d!server •  Shows information about the server.**
+**  d!savatar • Shows the server avatar. **
+**  d!avatar • Shows your avatar or the one who you mentioned.** 
 **__Administrator Commands__**
-**  -clear • Clears the chat.** 
-**  -ban • Bans someone you mentioned.** 
-**  -kick • Kicks someone you mentioned** 
-**  -mute • Mutes someone you mentioned.** 
-**  -unmute • Unmutes someone you mentioned.** 
-**  -gcreate •   Makes a giveaway about something you want to give.**
-**  -close • Closes the chat for members. **
-**  -open •  Opens the chat for members. **
-**  -bc •  Broadcasts anything you say to the whole server.  **
-**  -addemoji •  Adds a emoji. **
-**  -setLog •  Set a log channel. **
-**  -toggleLog •  Toggles the log channel. **
+**  d!clear • Clears the chat.** 
+**  d!ban • Bans someone you mentioned.** 
+**  d!kick • Kicks someone you mentioned** 
+**  d!mute • Mutes someone you mentioned.** 
+**  d!unmute • Unmutes someone you mentioned.** 
+**  d!gcreate •   Makes a giveaway about something you want to give.**
+**  d!close • Closes the chat for members. **
+**  d!open •  Opens the chat for members. **
+**  d!bc •  Broadcasts anything you say to the whole server.  **
+**  d!addemoji •  Adds a emoji. **
+**  d!setLog •  Set a log channel. **
+**  d!toggleLog •  Toggles the log channel. **
+**  d!setbye •  Toggles a goodbye room to any room you mention. **
 
 
 `);
@@ -63,7 +64,7 @@ client.on("message", message => {
 
   let room = message.content.split(" ").slice(1);
   let findroom = message.guild.channels.find("name", `${room}`);
-  if (message.content.startsWith("-setLog")) {
+  if (message.content.startsWith("d!setLog")) {
     if (!message.channel.guild)
       return message.reply("**This Command Only For Servers**");
     if (!message.member.hasPermission("MANAGE_GUILD"))
@@ -90,134 +91,43 @@ client.on("message", message => {
   }
 });
 
-const credits = JSON.parse(fs.readFileSync("./credits.json"));
-var time = require("./time.json");
-client.on("message", async message => {
-  if (message.author.bot || message.channel.type === "dm") return;
-  let args = message.content.split(" ");
-  let author = message.author.id;
-  if (!credits[author])
-    credits[author] = {
-      credits: 0
-    };
-  fs.writeFileSync("./credits.json", JSON.stringify(credits, null, 4));
-  if (args[0].toLowerCase() == `${prefix}credits`) {
-    const mention = message.mentions.users.first() || message.author;
-    const mentionn = message.mentions.users.first();
-    if (!args[2]) {
-      message.channel.send(
-        `**${mention.username}, Your :credit_card: balance is \`$${credits[mention.id].credits}\`**`
-      );
-    } else if (mentionn && args[2]) {
-      if (isNaN(args[2])) return message.channel.send(`**:x: | Error**`);
-      if (args[2] < 1) return message.channel.send(`**:x: | Error**`);
-      if (mention.bot) return message.channel.send(`**:x: | Error**`);
-      if (mentionn.id === message.author.id)
-        return message.channel.send(`**:x: | Error**`);
-      if (args[2] > credits[author].credits)
-        return message.channel.send(
-          `**:x: | Error , You don't have enough credits**`
+client.on("message", message => {
+  if (message.content.startsWith("d!setbye")) {
+    let args = message.mentions.channels.first();
+    if (!args)
+      message.channel.send("** Mention the room . ❌**").then(m => {
+        m.delete(1500);
+      });
+    if (
+      !message.guild.member(message.author.id).hasPermission("MANAGE_CHANNELS")
+    )
+      return message.channel.send("**You do not have permissions.. ❌**");
+    message.channel.send(`**${args} Toggled a goodbye room. :loudspeaker: **`); //By ItzTexo
+    client.on("guildMemberAdd", member => {
+      if (member.user.bot) return;
+      var embed = new Discord.RichEmbed()
+        .setAuthor(member.user.username, member.user.avatarURL)
+        .setThumbnail(member.user.avatarURL)
+        .setTitle(`**Goodbye ✋**`)
+        .addField("**__Thank you for your time.__**  ", `${member}`)
+        .setDescription(`**We were grateful for meeting you. ✋😢** `)
+        .addField("👤   People are in the server now.", `**[ ${member.guild.memberCount} ]**`, true)
+        .setColor("RANDOM")
+        .setFooter(
+          `We hope you enjoyed. `,
+          "https://cdn.discordapp.com/attachments/397818254439219217/399292026782351381/shy.png"
         );
-      if (args[2].includes("-")) return message.channel.send(`**:x: | Error**`);
-      let resulting = Math.floor(args[2] - args[2] * (5 / 100));
-      let tax = Math.floor(args[2] * (5 / 100));
-      let first = Math.floor(Math.random() * 9);
-      let second = Math.floor(Math.random() * 9);
-      let third = Math.floor(Math.random() * 9);
-      let fourth = Math.floor(Math.random() * 9);
-      let num = `${first}${second}${third}${fourth}`;
-      let canvas = Canvas.createCanvas(108, 40);
-      let ctx = canvas.getContext("2d");
-      const background = await Canvas.loadImage(
-        "https://cdn.discordapp.com/attachments/608278049091223552/617791172810899456/hmmm.png"
-      );
-      ctx.drawImage(background, 0, 0, canvas.width, canvas.height);
-      ctx.font = "20px Arial Bold";
-      ctx.fontSize = "20px";
-      ctx.fillStyle = "#ffffff";
-      message.channel
-        .send(
-          `**${
-            message.author.username
-          }, Transfer Fees: \`${tax}\`, Amount: \`$${resulting.toLocaleString()}\`**
-type these numbers to confirm: `
-        )
-        .then(essss => {
-          ctx.fillText(num, canvas.width / 2.4, canvas.height / 1.7);
-          message.channel.sendFile(canvas.toBuffer()).then(m => {
-            message.channel
-              .awaitMessages(r => r.author.id === message.author.id, {
-                max: 1,
-                time: 20000,
-                errors: ["time"]
-              })
-              .then(collected => {
-                if (collected.first().content === num) {
-                  message.channel.send(
-                    `**:moneybag: | ${
-                      message.author.username
-                    }, Done Trans \`$${resulting.toLocaleString()}\` To ${mentionn}**`
-                  );
-                  mention.send(
-                    `**:money_with_wings: | Transfer Receipt \`\`\`You Have Received \`$${resulting.toLocaleString()}\` From User ${
-                      message.author.username
-                    }; (ID (${message.author.id})\`\`\``
-                  );
-                  m.delete();
-                  credits[author].credits += Math.floor(
-                    -resulting.toLocaleString()
-                  );
-                  credits[mentionn.id].credits += Math.floor(
-                    +resulting.toLocaleString()
-                  );
-                  fs.writeFileSync(
-                    "./credits.json",
-                    JSON.stringify(credits, null, 4)
-                  );
-                } else {
-                  m.delete();
-                  essss.delete();
-                }
-              });
-          });
-        });
-    } else {
-      message.channel.send(
-        `**:x: | Error , Please Command True Ex: \`${prefix}credits [MentionUser] [Balance]\`**`
-      );
-    }
-  }
-  if (args[0].toLowerCase() === `${prefix}daily`) {
-    let cooldown = 8.64e7;
-    let Daily = time[message.author.id];
-    if (Daily !== null && cooldown - (Date.now() - Daily) > 0) {
-      let times = cooldown - (Date.now() - Daily);
-      message.channel.send(
-        `**:stopwatch: |  ${
-          message.author.username
-        }, your daily :dollar: credits refreshes in ${pretty(times, {
-          verbose: true
-        })}.**`
-      );
-      fs.writeFile("./time.json", JSON.stringify(time), function(e) {
-        if (e) throw e;
-      });
-    } else {
-      let ammount = (300, 500, 100, 200, 120, 150, 350, 320, 220, 250);
-      credits[author].credits += ammount;
-      time[message.author.id] = Date.now();
-      message.channel.send(
-        `**:atm:  | ${message.author.username}, you received your :yen: ${ammount} daily credits!**`
-      );
-      fs.writeFile("./credits.json", JSON.stringify(credits), function(e) {
-        if (e) throw e;
-      });
-    }
+
+      var channel = member.guild.channels.find("name", "leave");
+      if (!channel) return;
+      channel.send({ embed: embed });
+    });
   }
 });
 
+
 client.on("message", message => {
-  if (message.content.startsWith("-toggleLog")) {
+  if (message.content.startsWith("d!toggleLog")) {
     if (!message.channel.guild)
       return message.reply("**This Command Only For Servers**");
     if (!message.member.hasPermission("MANAGE_GUILD"))
@@ -255,13 +165,13 @@ client.on('message', msg => {
 });
 
 client.on("message", msg => {
-  if (msg.content === "السلام عليكم") {
-    msg.reply("** وعليكم السلام ورحمة الله وبركاته 💖💕**  ");
+  if (msg.content === "Back") {
+    msg.reply("** Welcome back! 💖💕**  ");
   }
 });
 
 client.on("message", message => {
-    const prefix = "-"
+    const prefix = "d!"
               
           if(!message.channel.guild) return;
    if(message.author.bot) return;
@@ -279,20 +189,6 @@ client.on("message", message => {
       }
   }); 
 
-client.on('message', message => {
-  if (message.author.id === client.user.id) return;
-if(!message.channel.guild) return
- let embed = new Discord.RichEmbed()
-  let args = message.content.split(' ').slice(1).join(' ');
-if(message.content.startsWith('-bc')) {
-      message.guild.members.forEach(member => {
- if(!message.member.hasPermission('ADMINISTRATOR')) return;
-          member.send(`**:loudspeaker: ${message.guild.name} **
-${args}`);
-      });
-  }
-
-});
 
 client.on('message', function(message) {
     if(!message.channel.guild) return;
@@ -300,6 +196,7 @@ client.on('message', function(message) {
     if (message.author.id === client.user.id) return;
     if (message.author.equals(client.user)) return;
     if (!message.content.startsWith(prefix)) return;
+  const prefix = "d!"
     
     var args = message.content.substring(prefix.length).split(' ');
     switch (args[0].toLocaleLowerCase()) {
@@ -355,7 +252,7 @@ client.on("message", async message => {
   }
 
   var filter = m => m.author.id === message.author.id;
-  if (message.content.startsWith("-gcreate")) {
+  if (message.content.startsWith("d!gcreate")) {
     let embed1 = new Discord.RichEmbed()
       .setColor()
       .setDescription("Missing the following permission `MANAGE_GUILD`");
@@ -502,7 +399,7 @@ client.on("message", message => {
   if (message.author.id === client.user.id) return;
 if(!message.channel.guild) return
           var args = message.content.substring('.'.length).split(" ");
-          if (message.content.startsWith("-bc")) {
+          if (message.content.startsWith("d!bc")) {
                        if (!message.member.hasPermission("ADMINISTRATOR"))  return;
 if (!args[1]) {
                               let embed3 = new Discord.RichEmbed()
@@ -521,7 +418,7 @@ if (!args[1]) {
 
 client.on('message', message => {
   if (!message.guild) return;
-  if (message.content.startsWith('-ban')) {
+  if (message.content.startsWith('d!ban')) {
     if (!message.member.hasPermission("BAN_MEMBERS"))  return;
     const user = message.mentions.users.first();
     if (user) {
@@ -548,7 +445,7 @@ client.on('message', message => {
 });
 
 client.on('message', message => {
-     if (message.content === "-server") {
+     if (message.content === "d!server") {
               if (!message.guild) return;
 
        var verificationLevel = message.guild.verificationLevel;
@@ -585,7 +482,7 @@ client.on("message",message => {
     var command = args[0];
     var emojisname = args[1];
     var emojislink = args[2];
-    if (command === "-addemoji"){
+    if (command === "d!addemoji"){
         if (!message.guild){
             return message.channel.send("Only SERVER Commands");
         }
@@ -608,7 +505,7 @@ client.on("message",message => {
 });
 
 client.on("message", message => {
-  if (message.content === "-close") {
+  if (message.content === "d!close") {
     if (!message.channel.guild)
       return message.reply(" This command is only for servers !!");
 
@@ -643,7 +540,7 @@ client.on("message", message => {
 
   let command = message.content.split(" ")[0];
 
-  if (command === "-unmute") {
+  if (command === "d!unmute") {
     if (!message.member.hasPermission("MANAGE_ROLES"))
       return message
         .reply("** You don't have the permission. 'Manage Roles' **")
@@ -705,7 +602,7 @@ client.on("message", message => {
 
   let command = message.content.split(" ")[0];
 
-  if (command === "-mute") {
+  if (command === "d!mute") {
     if (!message.member.hasPermission("MANAGE_ROLES"))
       return message
         .reply("** You do not have the following permission 'Manage Roles' **")
@@ -768,28 +665,9 @@ client.on("error", err => {
   console.log(err);
 });
 
-client.on("messageCreate", async message => {
-  let args = message.cleanContent.split(" ");
-  if (args[0] == `${prefix}roles`) {
-    let space = "                         ";
-    let roles = message.guild.roles
-      .map(r => r)
-      .sort((a, b) => b.position - a.position);
-    let rr = roles
-      .map(
-        r =>
-          `${r.name +
-            space.substring(r.name.length) +
-            message.guild.members.filter(m => m.roles.includes(r.id))
-              .length} members`
-      )
-      .join("\n");
-    await message.channel.sebd(`\`\`\`${rr}\`\`\``);
-  }
-});
 
 client.on('message', message => {
-    if (message.content.startsWith('-avatar')) {
+    if (message.content.startsWith('d!avatar')) {
         if (message.author.bot || message.channel.type == 'dm') return;
         var args = message.content.split(' ')[1];
         var avt = args || message.author.id;
@@ -811,7 +689,7 @@ client.on('message', message => {
 client.on('message', message => {
   if (!message.guild) return;
 
-  if (message.content.startsWith('-kick')) {
+  if (message.content.startsWith('d!kick')) {
     if (!message.member.hasPermission("KICK_MEMBERS"))  return;
     const user = message.mentions.users.first();
     if (user) {
@@ -836,7 +714,7 @@ client.on('message', message => {
 });
 
 client.on("message", message => {
-  if (message.content === "-bot") {
+  if (message.content === "d!bot") {
     const bot = new Discord.RichEmbed()
       .setAuthor(client.user.username, client.user.avatarURL)
       .setColor("#00000")
