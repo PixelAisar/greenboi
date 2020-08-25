@@ -6,6 +6,7 @@ var table = require("table").table;
 const Discord = require("discord.js");
 client.on('ready', () => {
   console.log(`Logged in as ${client.user.tag}!`);
+ client.user.setGame("discord.gg/ET8Drmd - Support Server")
 client.user.setStatus("dnd")
 });
 
