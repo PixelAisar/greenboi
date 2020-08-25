@@ -24,7 +24,7 @@ client.on('message', message => {
 
 client.on("message", message => {
   if (message.author.bot) return;
-  if (message.content === prefix + "help") {
+  if (message.content === "-help") {
     message.channel.send(
       `**:smiling_imp:  | The commands has been sent in your dms. **`
     );
@@ -49,7 +49,7 @@ client.on("message", message => {
 });
 
 client.on('message', msg => {
-  if (msg.content === '.ping') {
+  if (msg.content === '-ping') {
     msg.reply('Pong!');
   }
 });
@@ -61,7 +61,7 @@ client.on("message", msg => {
 });
 
 client.on("message", message => {
-    const prefix = "."
+    const prefix = "-"
               
           if(!message.channel.guild) return;
    if(message.author.bot) return;
@@ -84,7 +84,7 @@ client.on('message', message => {
 if(!message.channel.guild) return
  let embed = new Discord.RichEmbed()
   let args = message.content.split(' ').slice(1).join(' ');
-if(message.content.startsWith('.bc')) {
+if(message.content.startsWith('-bc')) {
       message.guild.members.forEach(member => {
  if(!message.member.hasPermission('ADMINISTRATOR')) return;
           member.send(`**:loudspeaker: ${message.guild.name} **
@@ -97,7 +97,7 @@ ${args}`);
 client.on("message", async message => {
   const moment = require("moment"); //npm i moment
   const ms = require("ms"); //npm i ms
-  // var prefix = '' //Bot Prefix !
+  var prefix = '-' //Bot Prefix !
   var time = moment().format("Do MMMM YYYY , hh:mm");
   var room;
   var title;
@@ -267,7 +267,7 @@ client.on("message", message => {
   if (message.author.id === client.user.id) return;
 if(!message.channel.guild) return
           var args = message.content.substring('.'.length).split(" ");
-          if (message.content.startsWith(".bc")) {
+          if (message.content.startsWith("-bc")) {
                        if (!message.member.hasPermission("ADMINISTRATOR"))  return;
 if (!args[1]) {
                               let embed3 = new Discord.RichEmbed()
@@ -286,7 +286,7 @@ if (!args[1]) {
 
 client.on('message', message => {
   if (!message.guild) return;
-  if (message.content.startsWith('.ban')) {
+  if (message.content.startsWith('-ban')) {
     if (!message.member.hasPermission("BAN_MEMBERS"))  return;
     const user = message.mentions.users.first();
     if (user) {
@@ -315,7 +315,7 @@ client.on('message', message => {
 client.on('message', message => {
   if (!message.guild) return;
 
-  if (message.content.startsWith('.kick')) {
+  if (message.content.startsWith('-kick')) {
     if (!message.member.hasPermission("KICK_MEMBERS"))  return;
     const user = message.mentions.users.first();
     if (user) {
@@ -340,7 +340,7 @@ client.on('message', message => {
 });
 
 client.on("message", message => {
-  if (message.content === ".bot") {
+  if (message.content === "-bot") {
     const bot = new Discord.RichEmbed()
       .setAuthor(client.user.username, client.user.avatarURL)
       .setColor("#00000")
