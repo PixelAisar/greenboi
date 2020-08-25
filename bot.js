@@ -34,9 +34,9 @@ client.on('ready', () => {
 client.user.setStatus("dnd")
 });
 
-const dev = ["604758234057670686","635186941977165824"];
+const dev = ["604758234057670686"];
 const admin = "=";
-var owner = "604758234057670686","635186941977165824"; 
+var owner = "604758234057670686"; 
 
 client.on('message', message => {
     var args = message.content.split(/[ ]+/)
