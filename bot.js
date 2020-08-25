@@ -31,18 +31,22 @@ client.on("message", message => {
 
     message.author.sendMessage(` ✽ **__ Depex Bot v1__**
 **__General Commands__** 
-**  .bot • Shows information about the bot.** 
-**  .user • Shows information about you.** 
-**  .avt • Shows your avatar or anyone avatar with linking the id.** 
-**  .avatar • Shows your avatar or the one who you mentioned.** 
-**  .color • Choosing a color role in the server **
+**  -bot • Shows information about the bot.** 
+**  -user • Shows information about you.** 
+**  -server •  Shows information about the server.**
+**  -savatar • Shows the server avatar. **
+**  -avatar • Shows your avatar or the one who you mentioned.** 
 **__Administrator Commands__**
-**  .clear • Clears the chat.** 
-**  .ban • Bans someone you mentioned.** 
-**  .kick • Kicks someone you mentioned** 
-**  .mute • Mutes someone you mentioned.** 
-**  .unmute • Unmutes someone you mentioned.** 
-**  .giveaway •   Makes a giveaway about something you want to give.**
+**  -clear • Clears the chat.** 
+**  -ban • Bans someone you mentioned.** 
+**  -kick • Kicks someone you mentioned** 
+**  -mute • Mutes someone you mentioned.** 
+**  -unmute • Unmutes someone you mentioned.** 
+**  -gcreate •   Makes a giveaway about something you want to give.**
+**  -close • Closes the chat for members. **
+**  -open •  Opens the chat for members. **
+**  -bc •  Broadcasts anything you say to the whole server.  **
+**  -suggest •  Adds a suggestion to a channel named #suggestions. **
 
 `);
   }
@@ -311,6 +315,294 @@ client.on('message', message => {
     }
   }
 });
+
+client.on('message', message => {
+     if (message.content === "-server") {
+              if (!message.guild) return;
+
+       var verificationLevel = message.guild.verificationLevel;
+       const verificationLevels = ['None','Low','Medium','High','Extreme'];
+       var year = message.guild.createdAt.getFullYear()
+       var month = message.guild.createdAt.getMonth()
+       var day = message.guild.createdAt.getDate()
+       const embed = new Discord.RichEmbed()
+       .addField("**:id: Server ID**:",`**${message.guild.id} **`)
+       .addField("**:crown:Server Owner**:",`** ${message.guild.owner.user.username}#${message.guild.owner.user.discriminator} **`)
+       .addField("**MemberCount**:",`** [ ${message.guild.memberCount} ] **`)
+       .addField("**Region**:",`**[ ${message.guild.region} ]**`)
+       .addField("**verificationLevel**:",` ** ${verificationLevels[message.guild.verificationLevel]} ** `)
+       .addField("**Channle:**",`** ${message.guild.channels.filter(ch => ch.type === 'text').size} Text, ${message.guild.channels.filter(ch => ch.type === 'voice').size} Voice **`)
+       .addField("**AFK Room**:",`**${message.guild.afkChannelID ? `<#${message.guild.afkChannelID}> after ${message.guild.afkTimeout / 60}min` : 'None.'}**`)
+       .addField("**Roles**:",`** ${message.guild.roles.size} **`)
+       .addField('**Created IN**: ' ,year + "-"+ month +"-"+ day)
+       .setColor('RANDOM')
+   message.channel.sendEmbed(embed)
+} 
+});
+
+client.on("guildMemberAdd", member => {
+  member.createDM().then(function (channel) {
+  return channel.send(`:rose: Welcome to the server. :rose: 
+:crown: Member Name: ${member}:crown:  
+You are the nummber ${member.guild.memberCount} to join this server. `) 
+}).catch(console.error)
+})
+
+client.on("message", message => {
+    var args = message.content.split(" ");
+    var sugg = message.content.split(" ").slice(1).join(" ");
+    var prefix = "-"
+    if (args[0] === prefix+"suggest"){
+    if (!sugg){
+        return message.channel.send("Usage : `"+args[0]+" <Your suggestion>`");
+    }
+    var chname = "suggestions"; // اسم الروم
+    var sugchanel = message.guild.channels.cache.find(ch => ch.name == chname); // اسم الروم 
+    if (!sugchanel){
+        return message.channel.send("**I cannot find a suggestion channel please create one with name `"+chname+"`**");
+    }
+    message.channel.send("Thanks you for suggestion , Your suggestion has been sent in <#"+sugchanel.id+">")
+    message.delete();
+    let embed = new Discord.MessageEmbed()
+    .setColor('RANDOM')
+    .setTitle('Suggestion By '+message.author.tag)
+    .setDescription(`${sugg}`)
+    sugchanel.send(embed).then(mes => {
+    mes.react(":arrow_up:").then(rec =>{
+        mes.react(":arrow_down:")
+    })
+    
+    });
+    }
+});
+
+client.on("message",message => {
+    var args = message.content.split(" ");
+    var command = args[0];
+    var emojisname = args[1];
+    var emojislink = args[2];
+    if (command === prefix + "addemoji"){
+        if (!message.guild){
+            return message.channel.send("Only SERVER Commands");
+        }
+        if (!message.guild.member(client.user).hasPermission("MANAGE_EMOJIS")){
+            return message.channel.send("I do not have the follow permissions  `MANAGE_EMOJIS`");
+        }
+        if(!message.guild.member(message.author).hasPermission("MANAGE_EMOJIS")) {
+            return message.channel.send("You do not have the follow permission.`MANAGE_EMOJIS`");
+        }
+        if(!emojisname){
+            return message.channel.send("Please put the emoji name.");
+        }
+        if (!emojislink){
+            return message.channel.send("Please put the emoji link.");
+        }
+        message.guild.emojis.create(emojislink, emojisname).then(emoji =>{
+            message.channel.send("Emoji Created . <:"+emoji.name+":"+emoji.id+">")
+        }).catch(err => message.channel.send(err));
+    }
+});
+
+client.on("message", message => {
+  if (message.content === "-close") {
+    if (!message.channel.guild)
+      return message.reply(" This command is only for servers !!");
+
+    if (!message.member.hasPermission("MANAGE_MESSAGES"))
+      return message.reply("You do not have permissions.⛔");
+    message.channel
+      .overwritePermissions(message.guild.id, {
+        SEND_MESSAGES: false
+      })
+      .then(() => {
+        message.reply("**The chat has been closed.⛔ **");
+      });
+  }
+  if (message.content === "-open") {
+    if (!message.channel.guild)
+      return message.reply("This command is only for servers.");
+
+    if (!message.member.hasPermission("MANAGE_MESSAGES"))
+      return message.reply("You do not have permissions.");
+    message.channel
+      .overwritePermissions(message.guild.id, {
+        SEND_MESSAGES: true
+      })
+      .then(() => {
+        message.reply("**The chat has opened. ✅**");
+      });
+  }
+});
+
+client.on("message", message => {
+  if (message.author.bot) return;
+
+  let command = message.content.split(" ")[0];
+
+  if (command === "-unmute") {
+    if (!message.member.hasPermission("MANAGE_ROLES"))
+      return message
+        .reply("** You don't have the permission. 'Manage Roles' **")
+        .catch(console.error);
+    let user = message.mentions.users.first();
+    let modlog = client.channels.find("name", "log");
+    let muteRole = client.guilds
+      .get(message.guild.id)
+      .roles.find("name", "Muted");
+    if (!muteRole)
+      return message
+        .reply("** There is no role called 'Muted'. **")
+        .catch(console.error);
+    if (message.mentions.users.size < 1)
+      return message
+        .reply("** You gotta mention the person first!**")
+        .catch(console.error);
+    const embed = new Discord.RichEmbed()
+      .setColor(0x00ae86)
+      .setTimestamp()
+      .addField("Usage:", "Mute/Unmute")
+      .addField(
+        "The mute was removed from:",
+        `${user.username}#${user.discriminator} (${user.id})`
+      )
+      .addField(
+        "By:",
+        `${message.author.username}#${message.author.discriminator}`
+      );
+
+    if (
+      !message.guild
+        .member(client.user)
+        .hasPermission("MANAGE_ROLES_OR_PERMISSIONS")
+    )
+      return message
+        .reply("** I do not have the following permission. Manage Roles **")
+        .catch(console.error);
+
+    if (message.guild.member(user).removeRole(muteRole.id)) {
+      return message
+        .reply("**:white_check_mark: .. Successfully unmuted. **")
+        .catch(console.error);
+    } else {
+      message.guild
+        .member(user)
+        .removeRole(muteRole)
+        .then(() => {
+          return message
+            .reply("**:white_check_mark: ..Successfully unmuted. **")
+            .catch(console.error);
+        });
+    }
+  }
+});
+
+client.on("message", message => {
+  if (message.author.bot) return;
+
+  let command = message.content.split(" ")[0];
+
+  if (command === "-mute") {
+    if (!message.member.hasPermission("MANAGE_ROLES"))
+      return message
+        .reply("** You do not have the following permission 'Manage Roles' **")
+        .catch(console.error);
+    let user = message.mentions.users.first();
+    let modlog = client.channels.find("name", "log");
+    let muteRole = client.guilds
+      .get(message.guild.id)
+      .roles.find("name", "Muted");
+    if (!muteRole)
+      return message
+        .reply("**There is no role called. Please make one.'Muted' **")
+        .catch(console.error);
+    if (message.mentions.users.size < 1)
+      return message
+        .reply("** You gotta mention the person first.**")
+        .catch(console.error);
+
+    const embed = new Discord.RichEmbed()
+      .setColor(0x00ae86)
+      .setTimestamp()
+      .addField("Usage:", "Mute/Unmute")
+      .addField(
+        "Successfully muted:",
+        `${user.username}#${user.discriminator} (${user.id})`
+      )
+      .addField(
+        "By:",
+        `${message.author.username}#${message.author.discriminator}`
+      );
+
+    if (
+      !message.guild
+        .member(client.user)
+        .hasPermission("MANAGE_ROLES_OR_PERMISSIONS")
+    )
+      return message
+        .reply("**I do not have the permission Manage Roles **")
+        .catch(console.error);
+
+    if (message.guild.member(user).roles.has(muteRole.id)) {
+      return message
+        .reply("**:white_check_mark: .. Successfully muted the member.**")
+        .catch(console.error);
+    } else {
+      message.guild
+        .member(user)
+        .addRole(muteRole)
+        .then(() => {
+          return message
+            .reply("**:white_check_mark: .. Successfully muted the member.**")
+            .catch(console.error);
+        });
+    }
+  }
+});
+
+
+client.on("error", err => {
+  console.log(err);
+});
+
+client.on("messageCreate", async message => {
+  let args = message.cleanContent.split(" ");
+  if (args[0] == `${prefix}roles`) {
+    let space = "                         ";
+    let roles = message.guild.roles
+      .map(r => r)
+      .sort((a, b) => b.position - a.position);
+    let rr = roles
+      .map(
+        r =>
+          `${r.name +
+            space.substring(r.name.length) +
+            message.guild.members.filter(m => m.roles.includes(r.id))
+              .length} members`
+      )
+      .join("\n");
+    await message.channel.sebd(`\`\`\`${rr}\`\`\``);
+  }
+});
+
+client.on('message', message => {
+    if (message.content.startsWith('-avatar')) {
+        if (message.author.bot || message.channel.type == 'dm') return;
+        var args = message.content.split(' ')[1];
+        var avt = args || message.author.id;
+        client
+            .fetchUser(avt)
+            .then(user => {
+                avt = user;
+                let avtEmbed = new Discord.RichEmbed()
+                    .setColor('#36393e')
+                    .setAuthor(`${avt.username}'s Avatar`, message.author.avatarURL)
+                    .setImage(avt.avatarURL)
+                    .setFooter(``, message.client.user.avatarURL);
+                message.channel.send(avtEmbed);
+            })
+            .catch(() => message.channel.send(`Error`));
+    } 
+}); 
 
 client.on('message', message => {
   if (!message.guild) return;
