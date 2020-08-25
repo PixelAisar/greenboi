@@ -105,13 +105,12 @@ client.on("message", message => {
       }
   }); 
 
-var prefix = '.';
 client.on('message', message => {
   if (message.author.id === client.user.id) return;
 if(!message.channel.guild) return
  let embed = new Discord.RichEmbed()
   let args = message.content.split(' ').slice(1).join(' ');
-if(message.content.startsWith(prefix + 'bc')) {
+if(message.content.startsWith('.bc')) {
       message.guild.members.forEach(member => {
  if(!message.member.hasPermission('ADMINISTRATOR')) return;
           member.send(`**:loudspeaker: ${message.guild.name} **
@@ -147,7 +146,7 @@ client.on("message", async message => {
   }
 
   var filter = m => m.author.id === message.author.id;
-  if (message.content.startsWith(prefix + "gcreate")) {
+  if (message.content.startsWith(".gcreate")) {
     let embed1 = new Discord.RichEmbed()
       .setColor()
       .setDescription("Missing the following permission `MANAGE_GUILD`");
@@ -291,12 +290,11 @@ client.on("message", async message => {
 });
 
 client.on("message", message => {
-  var prefix = ".";
   if (!message.channel.guild) return;
-  if (message.content.startsWith(prefix + "move")) {
+  if (message.content.startsWith(".move")) {
     if (message.member.hasPermission("MOVE_MEMBERS")) {
       if (message.mentions.users.size === 0) {
-        return message.channel.send("``Use : " + prefix + "move @User``");
+        return message.channel.send("``Use : " ".move @User``");
       }
       if (message.member.voiceChannel != null) {
         if (message.mentions.members.first().voiceChannel != null) {
@@ -342,8 +340,8 @@ client.on("message", message => {
 client.on("message", message => {
   if (message.author.id === client.user.id) return;
 if(!message.channel.guild) return
-          var args = message.content.substring(prefix.length).split(" ");
-          if (message.content.startsWith(prefix + "bc")) {
+          var args = message.content.substring('.'.length).split(" ");
+          if (message.content.startsWith(".bc")) {
                        if (!message.member.hasPermission("ADMINISTRATOR"))  return;
 if (!args[1]) {
                               let embed3 = new Discord.RichEmbed()
@@ -416,7 +414,7 @@ client.on('message', message => {
 });
 
 client.on("message", message => {
-  if (message.content === prefix + "bot") {
+  if (message.content === ".bot") {
     const bot = new Discord.RichEmbed()
       .setAuthor(client.user.username, client.user.avatarURL)
       .setColor("#00000")
