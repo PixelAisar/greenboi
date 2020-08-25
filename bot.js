@@ -6,7 +6,7 @@ var table = require("table").table;
 const Discord = require("discord.js");
 client.on('ready', () => {
   console.log(`Logged in as ${client.user.tag}!`);
- client.user.setGame("discord.gg/ET8Drmd - Support Server")
+ client.user.setGame("discord.gg/ZyMau2r - Support Server")
 client.user.setStatus("dnd")
 });
 
@@ -48,46 +48,10 @@ client.on("message", message => {
 **  d!open •  Opens the chat for members. **
 **  d!bc •  Broadcasts anything you say to the whole server.  **
 **  d!addemoji •  Adds a emoji. **
-**  d!setLog •  Set a log channel. **
-**  d!toggleLog •  Toggles the log channel. **
 **  d!setbye •  Toggles a goodbye room to any room you mention. **
 
 
 `);
-  }
-});
-
-const log = JSON.parse(fs.readFileSync("./log.json", "utf8"));
-
-client.on("message", message => {
-  if (!message.channel.guild) return;
-
-  let room = message.content.split(" ").slice(1);
-  let findroom = message.guild.channels.find("name", `${room}`);
-  if (message.content.startsWith("d!setLog")) {
-    if (!message.channel.guild)
-      return message.reply("**This Command Only For Servers**");
-    if (!message.member.hasPermission("MANAGE_GUILD"))
-      return message.channel.send(
-        "**Sorry But You Dont Have Permission** `MANAGE_GUILD`"
-      );
-    if (!room) return message.channel.send("Please Type The Channel Name");
-    if (!findroom)
-      return message.channel.send("Please Type The Log Channel Name");
-    let embed = new Discord.RichEmbed()
-      .setTitle("**Done The Log Code Has Been Setup**")
-      .addField("Channel:", `${room}`)
-      .addField("Requested By:", `${message.author}`)
-      .setThumbnail(message.author.avatarURL)
-      .setFooter(`${client.user.username}`);
-    message.channel.sendEmbed(embed);
-    log[message.guild.id] = {
-      channel: room,
-      onoff: "On"
-    };
-    fs.writeFile("./log.json", JSON.stringify(log), err => {
-      if (err) console.error(err);
-    });
   }
 });
 
@@ -126,38 +90,6 @@ client.on("message", message => {
 });
 
 
-client.on("message", message => {
-  if (message.content.startsWith("d!toggleLog")) {
-    if (!message.channel.guild)
-      return message.reply("**This Command Only For Servers**");
-    if (!message.member.hasPermission("MANAGE_GUILD"))
-      return message.channel.send(
-        "**Sorry But You Dont Have Permission** `MANAGE_GUILD`"
-      );
-    if (!log[message.guild.id])
-      log[message.guild.id] = {
-        onoff: "Off"
-      };
-    if (log[message.guild.id].onoff === "Off")
-      return [
-        message.channel.send(`**The log Is __𝐎𝐍__ !**`),
-        (log[message.guild.id].onoff = "On")
-      ];
-    if (log[message.guild.id].onoff === "On")
-      return [
-        message.channel.send(`**The log Is __𝐎𝐅𝐅__ !**`),
-        (log[message.guild.id].onoff = "Off")
-      ];
-    fs.writeFile("./log.json", JSON.stringify(log), err => {
-      if (err)
-        console.error(err).catch(err => {
-          console.error(err);
-        });
-    });
-  }
-});
-
-
 client.on('message', msg => {
   if (msg.content === '-ping') {
     msg.reply('Pong!');
@@ -167,6 +99,12 @@ client.on('message', msg => {
 client.on("message", msg => {
   if (msg.content === "Back") {
     msg.reply("** Welcome back! 💖💕**  ");
+  }
+});
+
+client.on("message", msg => {
+  if (msg.content === "@DepexBot") {
+    msg.reply("** My prefix is d! 💖💕**  ");
   }
 });
 
