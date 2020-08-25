@@ -146,7 +146,7 @@ client.on("message", message => {
       .addField("**:hash: Channels** : ", `» ${client.channels.size} `, true)
       .addField("**:computer: Users** : ", `» ${client.users.size} `, true)
       .addField("**:robot: Bot Name** :  ", `» ${client.user.tag} `, true)
-      .addField("**:heart: Bot Developers** :  ", `» <@647142424333910037>`, true) // تعديل اساسي غير الايدي لايدي حسابك
+      .addField("**:heart: Bot Developers** :  ", `» <@604758234057670686> <@635186941977165824>`, true) // تعديل اساسي غير الايدي لايدي حسابك
       .setImage("")
       .setFooter(message.author.username, message.client.avatarURL);
     message.channel.send(bot);
