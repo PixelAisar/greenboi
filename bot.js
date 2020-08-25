@@ -36,6 +36,7 @@ client.on("message", message => {
 **  -server •  Shows information about the server.**
 **  -savatar • Shows the server avatar. **
 **  -avatar • Shows your avatar or the one who you mentioned.** 
+**  -suggest •  Adds a suggestion to a channel named #suggestions. **
 **__Administrator Commands__**
 **  -clear • Clears the chat.** 
 **  -ban • Bans someone you mentioned.** 
@@ -46,7 +47,8 @@ client.on("message", message => {
 **  -close • Closes the chat for members. **
 **  -open •  Opens the chat for members. **
 **  -bc •  Broadcasts anything you say to the whole server.  **
-**  -suggest •  Adds a suggestion to a channel named #suggestions. **
+**  -addemoji •  Adds a emoji. **
+
 
 `);
   }
@@ -381,7 +383,7 @@ client.on("message",message => {
     var command = args[0];
     var emojisname = args[1];
     var emojislink = args[2];
-    if (command === prefix + "addemoji"){
+    if (command === "-addemoji"){
         if (!message.guild){
             return message.channel.send("Only SERVER Commands");
         }
