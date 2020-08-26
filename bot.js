@@ -129,12 +129,13 @@ client.on("message", message => {
 
 
 client.on('message', function(message) {
+    const prefix = "d!"
     if(!message.channel.guild) return;
     if (message.author.bot) return;
     if (message.author.id === client.user.id) return;
     if (message.author.equals(client.user)) return;
     if (!message.content.startsWith(prefix)) return;
-  const prefix = "d!"
+
     
     var args = message.content.substring(prefix.length).split(' ');
     switch (args[0].toLocaleLowerCase()) {
