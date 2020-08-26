@@ -406,14 +406,6 @@ client.on('message', message => {
 } 
 });
 
-client.on("guildMemberAdd", member => {
-  member.createDM().then(function (channel) {
-  return channel.send(`:rose: Welcome to the server. :rose: 
-:crown: Member Name: ${member}:crown:  
-You are the nummber ${member.guild.memberCount} to join this server. `) 
-}).catch(console.error)
-})
-
 
 client.on("message",message => {
     var args = message.content.split(" ");
