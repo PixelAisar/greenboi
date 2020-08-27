@@ -103,6 +103,12 @@ client.on("message", msg => {
 });
 
 client.on("message", msg => {
+  if (msg.content === "d!invite") {
+    msg.reply("** https://discord.com/api/oauth2/authorize?client_id=739475671084040217&permissions=8&scope=bot 💕**  ");
+  }
+});
+
+client.on("message", msg => {
   if (msg.content === "@DepexBot") {
     msg.reply("** My prefix is d! 💖💕**  ");
   }
